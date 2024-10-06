@@ -113,7 +113,29 @@ int leftBitCount(int x) {
  *   Difficulty: 4
  */
 unsigned float_i2f(int x) {
-    return 2;
+    if (x == 0){ return 0;}
+    int s = 0;         //默认为正数
+    if (x < 0){
+        s = 1;
+        x = ~x + 1;
+    }
+    int count = 0;
+    unsigned int temp = x << 1;
+    while(!(temp & 0x80000000)){
+        count += 1;
+        temp <<= 1;
+    }
+    temp <<= 1;
+    int exp = 157 - count;
+    int round_off = 0;
+    if((temp & 0x1FF) > 0x100){
+        round_off = 1;
+    }
+    if((temp & 0x3FF) == 0x300){
+        round_off = 1;
+    }
+    unsigned int result = s + (exp << 23) + (temp >> 9) + round_off;
+    return result;
 }
 
 /*
